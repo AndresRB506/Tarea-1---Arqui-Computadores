@@ -2,33 +2,30 @@ section .data
 
 	variable:  db ?
 
-	msj_1: db "Bienvenido al registro de Notas. Si desea ver la lista por orden ALFABETICO presione #1. Si desea ver la lista por orden de NOTA presione #2, si desea ver las nota en un HISTOGRAMA	presione #3:" ,0xa
+	msj_1: db "Bienvenido al registro de Notas. Si desea ver la lista por orden ALFABETICO presione #1. Si desea ver la lista por orden de NOTA presione #2, si desea ver las nota en un HISTOGRAMA	presione #3:     " ,0xa
 	msj1_tam: equ $-msj_1
 
-	msj_2: db "Usted presiono la tecla:" ,0xa
+	msj_2: db "Usted presiono la tecla:    " ,0xa
 	msj2_tam: equ $-msj_2
 
-	msj_3: db "Fin del Programa."
+	msj_3: db "Fin del Programa.      "
 	msj3_tam: equ $-msj_3
 
-	msj_4: db "Usted solicito ver por orden ALFABETICO"
+	msj_4: db "Usted solicito ver por orden ALFABETICO    "
 	msj4_tam: equ $-msj_4
 
-	msj_5: db "Usted solicito ver por orden de NOTAS"
+	msj_5: db "Usted solicito ver por orden de NOTAS    "
 	msj5_tam: equ $-msj_5
 
-	msj_6: db "Usted solicito ver el HISTOGRAMA"
+	msj_6: db "Usted solicito ver el HISTOGRAMA    "
 	msj6_tam: equ $-msj_6
 section .text
 	global _start
 global _ingreso
-global _solicitud_Alfa
-global _solicitud_Notas
-global _solicitud_Histo
-global _retorno_soli
-global _imp_alfa
-global _imp_nota
-global _imp_histo
+global _solicitud
+global _imp_Alfa
+global _imp_Notas
+global _imp_Histo
 global _validacion
 global _mostrar
 global _fin
@@ -44,34 +41,33 @@ _ingreso:   ;pedimos solicitud
 	mov rsi,variable
 	mov rdx,1
 	syscall
- _solicitud_Alfa: ;se comprueba si se solicito lista por orden alfabetico
-	cmp rsi,1
-	je _imp_alfa
 
-_solicitu_Notas:  ;se comprueba si se quieren ver por orden nota
-	cmp rsi,2
-	je _imp_nota
-
-_solicitud_Histo: ;se comprtueba si se solicito histograma
-	cmp rsi,3
-	je _imp_histo
-_retorno_soli: ;solicitud invalida se pide nueva solicitud
+	xor rax,rax
+ _solicitud: ;se comprueba lo que se solicito
+	
+	cmp byte [variable], '1'  ; Comparamos con '1' para la opción 1
+	je _imp_Alfa        ; Si es igual a '1', saltamos a la etiqueta _solicitud_Alfa
+	cmp byte [variable], '2'  ; Comparamos con '2' para la opción 2
+	je _imp_Notas       ; Si es igual a '2', saltamos a la etiqueta _solicitud_Notas
+	cmp byte [variable], '3'  ; Comparamos con '3' para la opción 3
+	je _imp_Histo 
 	jmp _start
-_imp_alfa:
+
+_imp_Alfa:
 	mov rax,1
 	mov rdi,1
 	mov rsi,msj_4
 	mov rdx,msj4_tam
 	syscall
 	jmp _validacion
-_imp_nota:
+_imp_Notas:
 	mov rax,1
 	mov rdi,1
 	mov rsi,msj_5
 	mov rdx,msj5_tam
 	syscall
 	jmp _validacion
-_imp_histo:
+_imp_Histo:
 	mov rax,1
 	mov rdi,1
 	mov rsi,msj_6
@@ -84,12 +80,14 @@ _validacion:
 	mov rsi, msj_2
 	mov rdx, msj2_tam
 	syscall
+	jmp _mostrar
 _mostrar:
 	mov rax,1
 	mov rdi,1
 	mov rsi,variable
 	mov rdx,1
 	syscall
+	jmp _fin
 
 _fin:
 	mov rax,1
