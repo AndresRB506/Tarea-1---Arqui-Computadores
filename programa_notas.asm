@@ -1,3 +1,4 @@
+%include "linux64.inc"
 section .data
 
 	variable:  db ?
@@ -19,22 +20,30 @@ section .data
 
 	msj_6: db "Usted solicito ver el HISTOGRAMA    "
 	msj6_tam: equ $-msj_6
+
+	filename db "lista_est.txt",0
+
+section .bss
+	text resb 4096
 section .text
 	global _start
-global _ingreso
-global _solicitud
-global _imp_Alfa
-global _imp_Notas
-global _imp_Histo
-global _validacion
-global _mostrar
-global _fin
+	global _start_read
+	global _ingreso
+	global _solicitud
+	global _imp_Alfa
+	global _imp_Notas
+	global _imp_Histo
+	global _validacion
+	global _mostrar
+	global _fin
 _start: 
 	mov rax,1
 	mov rdi,1
 	mov rsi,msj_1
 	mov rdx,msj1_tam
 	syscall
+	jmp _ingreso
+
 _ingreso:   ;pedimos solicitud
 	mov rax,0
 	mov rdi,0
@@ -87,6 +96,29 @@ _mostrar:
 	mov rsi,variable
 	mov rdx,1
 	syscall
+	jmp _start_read
+
+_start_read:
+; Open the file
+	mov rax, SYS_OPEN
+	mov rdi, filename
+	mov rsi, O_RDONLY
+	mov rdx, 0
+	syscall
+
+;read from the file
+	push rax
+	mov rdi, rax
+	mov rax, SYS_READ
+	mov rsi, text
+	mov rdx,4096 
+	syscall
+
+;close the file
+	mov rax, SYS_CLOSE
+	pop rdi
+	syscall
+	print text
 	jmp _fin
 
 _fin:

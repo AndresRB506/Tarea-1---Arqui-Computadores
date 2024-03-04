@@ -1,0 +1,3 @@
+Juan  <Barrantes> <Herrera> nota:[85]
+Emma <Castro> <Mora> nota:[63]
+Jose <Barquero> <apellido2> nota:[70]
