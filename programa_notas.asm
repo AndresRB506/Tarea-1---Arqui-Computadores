@@ -9,16 +9,16 @@ section .data
 	msj_2: db "Usted presiono la tecla:    " ,0xa
 	msj2_tam: equ $-msj_2
 
-	msj_3: db "Fin del Programa.      "
+	msj_3: db "Fin del Programa. ",0xa
 	msj3_tam: equ $-msj_3
 
-	msj_4: db "Usted solicito ver por orden ALFABETICO    "
+	msj_4: db "Usted solicito ver por orden ALFABETICO",0xa
 	msj4_tam: equ $-msj_4
 
-	msj_5: db "Usted solicito ver por orden de NOTAS    "
+	msj_5: db "Usted solicito ver por orden de NOTAS",0xa
 	msj5_tam: equ $-msj_5
 
-	msj_6: db "Usted solicito ver el HISTOGRAMA    "
+	msj_6: db "Usted solicito ver el HISTOGRAMA",0xa
 	msj6_tam: equ $-msj_6
 
 	filename db "lista_est.txt",0
@@ -42,6 +42,8 @@ _start:
 	mov rsi,msj_1
 	mov rdx,msj1_tam
 	syscall
+
+
 	jmp _ingreso
 
 _ingreso:   ;pedimos solicitud
@@ -68,36 +70,27 @@ _imp_Alfa:
 	mov rsi,msj_4
 	mov rdx,msj4_tam
 	syscall
-	jmp _validacion
+	
+
+	jmp  _start_read
 _imp_Notas:
 	mov rax,1
 	mov rdi,1
 	mov rsi,msj_5
 	mov rdx,msj5_tam
 	syscall
-	jmp _validacion
+
+
+	jmp  _start_read
 _imp_Histo:
 	mov rax,1
 	mov rdi,1
 	mov rsi,msj_6
 	mov rdx,msj6_tam
 	syscall
-	jmp _validacion
-_validacion:
-	mov rax, 1
-	mov rdi, 1
-	mov rsi, msj_2
-	mov rdx, msj2_tam
-	syscall
-	jmp _mostrar
-_mostrar:
-	mov rax,1
-	mov rdi,1
-	mov rsi,variable
-	mov rdx,1
-	syscall
-	jmp _start_read
 
+	jmp _start_read
+	
 _start_read:
 ; Open the file
 	mov rax, SYS_OPEN
